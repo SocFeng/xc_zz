@@ -21,7 +21,7 @@ redis 的value 包含很多格式，通常说的数据类型指的是value的数
 通用命令指的是部分数据类型，都可以只用的指令
 
 - KEYS 获取指规则的key值
-
+分布
 ```redis
  KEYS pattern
  summary: Find all keys matching the given pattern
