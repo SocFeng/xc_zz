@@ -215,7 +215,7 @@
     ```
     -
 - 【保存镜像】
-    - 提交:docekr commit -a 作者 -c 改变的列表 -m  提交的说明信息 -p 打包期间暂停容器运行 容器名/id 新镜像名:版本号
+    - 提交:docekr commit -a 作者 -c 改变的列表 -m 提交的说明信息 -p 打包期间暂停容器运行 容器名/id 新镜像名:版本号
     ```shell
     xc@localhost ~]$ docker commit -a 'soc-feng' -m '6.1 er tong jie html' mynginx nginx_index_61
     sha256:8c4911d699dcf2f97d4c460a77d195d855c161e12cc60162029c645da62f8326
@@ -247,8 +247,92 @@
 
     ```
 - 【上传镜像】
-  - 上传 docker push 镜像名:版本号 
-  - 改名 docker tag 镜像名:版本号 新镜像名:新版本号
+    - 上传 docker push 镜像名:版本号
+    - 改名 docker tag 镜像名:版本号 新镜像名:新版本号
 
+## Docker 存储
 
+> 容器是一个虚拟的机器，存放的数据是只在容器内部使用，相对于外部是隔离的，容器内部的数据会随着容器的销毁而被删除，所以数据会丢失
 
+- 【数据挂载】
+> 将机器的文件目录和容器的内部目录相关联，让这两个目录数据互通，实现内外数据修改同步
+  - 目录挂载：-v 宿主机目录:容器目录
+      ```shell
+        docker run -d -p 88:80 --name c_nginx -v /home/xc/local_nginx/html:/usr/share/nginx/html -v /home/xc/local_nginx/logs:/var/log/nginx nginx_index_61    
+        运行这个容器的时候：
+        会将宿主机的：/home/xc/local_nginx/html，
+        目录下的内容复制到容器的/usr/share/nginx/html目录下，并启动容器
+        
+        -v /home/xc/local_nginx/logs:/var/log/nginx
+        将docker nginx 内部的日志文件挂载出来
+      ```
+    - 卷 -v 卷名:容器目录
+    ```shell
+    卷名：位置固定再宿主机上，/var/lib/docker/volumes/卷名
+    数据跟 目录挂载一致
+    
+    见到那的来说卷就是固定的某个位置的的一个目录代号
+    ```
+    - 查看看卷详情：docker volume inspect 卷名
+  - 【Docker 网络】
+    - 创建网络: docker network create  网络名称
+    ```shell
+    [root@localhost logs]# docker network create net1
+    cc41ce180b9f424d3463e41bb29c028d2d5b5b7ad8b5fa03dace2d615df91e38
+    
+    [root@localhost logs]# docker network ls
+    NETWORK ID     NAME      DRIVER    SCOPE
+    4c56d5c33675   all-net   bridge    local
+    b00606b5eeeb   bridge    bridge    local
+    e2805abca271   host      host      local
+    cc41ce180b9f   net1      bridge    local
+    60573c875ba4   none      null      local
+
+    ```
+    - 网络列表：docker network ls
+    ```shell
+    [root@localhost logs]# docker network ls
+    NETWORK ID     NAME      DRIVER    SCOPE
+    4c56d5c33675   all-net   bridge    local
+    b00606b5eeeb   bridge    bridge    local
+    e2805abca271   host      host      local
+    cc41ce180b9f   net1      bridge    local
+    60573c875ba4   none      null      local
+
+    ```
+    - 网络详情：docker network inspect net1
+    ```shell
+    [root@localhost logs]# docker network inspect net1
+    [
+        {
+            "Name": "net1",
+            "Id": "cc41ce180b9f424d3463e41bb29c028d2d5b5b7ad8b5fa03dace2d615df91e38",
+            "Created": "2026-05-18T10:40:45.468355853+08:00",
+            "Scope": "local",
+            "Driver": "bridge",
+            "EnableIPv4": true,
+            "EnableIPv6": false,
+            "IPAM": {
+                "Driver": "default",
+                "Options": {},
+                "Config": [
+                    {
+                        "Subnet": "172.19.0.0/16",
+                        "Gateway": "172.19.0.1"
+                    }
+                ]
+            },
+            "Internal": false,
+            "Attachable": false,
+            "Ingress": false,
+            "ConfigFrom": {
+                "Network": ""
+            },
+            "ConfigOnly": false,
+            "Containers": {},
+            "Options": {},
+            "Labels": {}
+        }
+    ]
+
+    ```
