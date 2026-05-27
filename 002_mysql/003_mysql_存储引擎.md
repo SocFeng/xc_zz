@@ -8,3 +8,8 @@
   - xxx.myd 数据信息文件 
   - xxx.myi 存放索引信息文件  
   - xxx.sdi 存放表结构文件
+
+
+## InnoDB和MyISAM的区别
+1. InnoDB支持事务，行锁，外键，奔溃恢复
+2. MyISAM不支持事务，表锁，查询快
